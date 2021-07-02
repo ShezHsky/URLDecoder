@@ -1,0 +1,6 @@
+"ERROR_MISSING_QUERY_ITEM_FOR_KEY_FORMAT" = "No query item found named \"%@\"";
+"ERROR_MISSING_VALUE_FORMAT" = "No value found for key \"%@\"";
+"ERROR_MISSING_SINGLE_VALUE_FORMAT" = "No value found";
+"ERROR_TYPE_MISMATCH_FORMAT" = "Unable to decode value \"%@\" into type %@";
+"ERROR_UNKEYED_CONTAINER_AT_END" = "Unkeyed container is at end.";
+"ERROR_CANNOT_OBTAIN_NESTED_CONTAINER_AS_CONTAINER_IS_AT_END" = "Cannot get nested unkeyed container -- unkeyed container is at end.";

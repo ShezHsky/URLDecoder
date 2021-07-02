@@ -1,0 +1,18 @@
+%{
+codable_types = ['Bool', 'String', 'Double', 'Float',
+                 'Int', 'Int8', 'Int16', 'Int32', 'Int64',
+                 'UInt', 'UInt8', 'UInt16', 'UInt32', 'UInt64']
+}%
+% for type in codable_types:
+struct Unkeyed${type}Container: Decodable, Equatable {
+    
+    var argument: ${type}
+    
+    init(from decoder: Decoder) throws {
+        var container = try decoder.unkeyedContainer()
+        argument = try container.decode(${type}.self)
+    }
+    
+}
+
+% end

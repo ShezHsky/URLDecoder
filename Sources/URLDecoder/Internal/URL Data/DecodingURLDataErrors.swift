@@ -1,0 +1,1 @@
+struct NotImplemented: Error { }

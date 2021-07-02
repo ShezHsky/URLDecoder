@@ -1,0 +1,30 @@
+protocol KeyedContainer: Decodable, Equatable {
+    
+    associatedtype ContainedValue: Decodable
+    
+}
+
+%{
+codable_types = ['Bool', 'String', 'Double', 'Float',
+                 'Int', 'Int8', 'Int16', 'Int32', 'Int64',
+                 'UInt', 'UInt8', 'UInt16', 'UInt32', 'UInt64']
+}%
+% for type in codable_types:
+struct Keyed${type}Container: KeyedContainer {
+
+    enum CodingKeys: String, CodingKey {
+        case argument
+    }
+    
+    typealias ContainedValue = ${type}
+    
+    var argument: ${type}
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        argument = try container.decode(${type}.self, forKey: .argument)
+    }
+    
+}
+
+% end
