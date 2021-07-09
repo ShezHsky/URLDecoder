@@ -1,0 +1,17 @@
+name: Validate Release
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Verify Release Version
+        run: |
+          git tag -l | if [[ $(grep $(cat VERSION)) ]]; then exit 1; fi
+          
