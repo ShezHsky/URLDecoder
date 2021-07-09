@@ -1,0 +1,22 @@
+name: Release Package
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  release:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Verify Release Version
+        run: |
+          git tag -l | if [[ $(grep $(cat VERSION)) ]]; then exit 1; fi
+
+      - name: Make Release
+        run: |
+          git tag $(cat VERSION)
+          git push --tags
+          
