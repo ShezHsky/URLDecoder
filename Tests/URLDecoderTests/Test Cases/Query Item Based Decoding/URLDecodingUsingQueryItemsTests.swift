@@ -3,13 +3,6 @@ import URLDecoder
 
 class URLDecodingUsingQueryItemsTests: XCTestCase {
     
-    private var decoder: URLDecoder!
-    
-    override func setUp() {
-        super.setUp()
-        decoder = URLDecoder()
-    }
-    
     func testQueryItemNotPresentThrowsKeyMissingError() throws {
         struct DecodesArgument: Decodable {
             
@@ -21,6 +14,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
             
         }
         
+        let decoder = URLDecoder()
         let urlWithoutArgument = try URLBuilder.buildURL()
         XCTAssertThrowsError(try decoder.decode(DecodesArgument.self, from: urlWithoutArgument)) { (error) in
             let expectedContext = DecodingError.Context(
@@ -39,6 +33,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
             var argument: Int
         }
         
+        let decoder = URLDecoder()
         let url = try URLBuilder.buildURL(queryItems: ["argument": "Hello"])
         XCTAssertThrowsError(try decoder.decode(DecodesArgument.self, from: url)) { (error) in
             let expectedContext = DecodingError.Context(
@@ -53,6 +48,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
     }
     
     func testIndicatesKeyPresentWhenQueryItemExistsInPath() throws {
+        let decoder = URLDecoder()
         let url = try URLBuilder.buildURL(queryItems: ["keyedInner": "Hello"])
         
         let spy = try decoder.decode(DecodingSpy.self, from: url)
@@ -64,6 +60,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
     }
     
     func testIndicatesKeyNotPresentWhenQueryItemDoesNotExistInPath() throws {
+        let decoder = URLDecoder()
         let url = try URLBuilder.buildURL()
         
         let spy = try decoder.decode(DecodingSpy.self, from: url)
@@ -75,6 +72,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
     }
     
     func testPropogatesUserInfoToTopLevelDecoder() throws {
+        var decoder = URLDecoder()
         let url = try URLBuilder.buildURL()
         
         let userInfo: [CodingUserInfoKey: String] = [CodingUserInfoKey(rawValue: "key")!: "value"]
@@ -88,6 +86,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
     }
     
     func testPropogatesUserInfoToNestedKeyedDecoder() throws {
+        var decoder = URLDecoder()
         let url = try URLBuilder.buildURL(queryItems: ["keyedInner": "Hello"])
         
         let userInfo: [CodingUserInfoKey: String] = [CodingUserInfoKey(rawValue: "key")!: "value"]
@@ -101,6 +100,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
     }
     
     func testTopLevelCodingPathRemainsEmpty() throws {
+        let decoder = URLDecoder()
         let url = try URLBuilder.buildURL()
         
         let spy = try decoder.decode(DecodingSpy.self, from: url)
@@ -111,6 +111,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
     }
     
     func testInnerDecoderCodingPathContainsKeyFromParent() throws {
+        let decoder = URLDecoder()
         let url = try URLBuilder.buildURL(queryItems: ["keyedInner": "Hello"])
         
         let spy = try decoder.decode(DecodingSpy.self, from: url)
@@ -141,6 +142,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
             "uint64Value": UInt64(10)
         ]
         
+        let decoder = URLDecoder()
         let url = try URLBuilder.buildURL(queryItems: allQueryItemKeysAndValues)
         
         let decoded = try decoder.decode(EverySupportedNativeDecodableTypeUsingKeyedQueryItems.self, from: url)
@@ -166,6 +168,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
     }
     
     func testDecodingEveryOptionalTypeUnderTheSun() throws {
+        let decoder = URLDecoder()
         let url = try URLBuilder.buildURL()
         let decoded = try decoder.decode(EverySupportedOptionalNativeDecodableTypeUsingKeyedQueryItems.self, from: url)
         
@@ -287,6 +290,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
             
         }
         
+        let decoder = URLDecoder()
         let url = try XCTUnwrap(URL(string: "https://some.domain/path?leaf=unused"))
         let decoded = try decoder.decode(Container.self, from: url)
         let expected: [CodingKey] = [Container.CodingKeys.leaf]
@@ -335,6 +339,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
             
         }
         
+        let decoder = URLDecoder()
         let url = try XCTUnwrap(URL(string: "https://some.domain/path?child=42"))
         let decoded = try decoder.decode(Parent.self, from: url)
         let expected = Parent(child: .init(value: 42))
@@ -378,6 +383,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
             
         }
         
+        let decoder = URLDecoder()
         let url = try XCTUnwrap(URL(string: "https://some.domain/path?child=%00"))
         
         XCTAssertThrowsError(try decoder.decode(Parent.self, from: url)) { (error) in
@@ -396,6 +402,7 @@ class URLDecodingUsingQueryItemsTests: XCTestCase {
         value: T,
         line: UInt = #line
     ) throws where T: Decodable & Equatable {
+        let decoder = URLDecoder()
         let url = try URLBuilder.buildURL(queryItems: KeyedDecodableContainer<T>.prepareQueryItem(value: value))
         let result = try decoder.decode(KeyedDecodableContainer<T>.self, from: url)
         let expected = KeyedDecodableContainer(argument: value)

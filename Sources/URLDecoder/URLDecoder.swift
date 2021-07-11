@@ -58,6 +58,9 @@ public struct URLDecoder {
     /// A dictionary you use to customize the decoding process by providing contextual information.
     public var userInfo: [CodingUserInfoKey: Any] = [:]
     
+    /// The criteria to apply against inbound `URL`s prior to decoding.
+    public var urlCriteria: URLCriteria = URLCriteria()
+    
     /// Returns a value of the type you specify, decoded from a `URL` object.
     ///
     /// - Parameters:
@@ -69,6 +72,10 @@ public struct URLDecoder {
     public func decode<T>(_ type: T.Type, from url: URL) throws -> T where T: Decodable {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             throw URLDecodingError.malformedURL
+        }
+        
+        guard urlCriteria.isFulfilled(by: components) else {
+            throw URLDecodingError.criteriaUnsatisfied(urlCriteria, url)
         }
         
         let data = URLComponentsData(components: components)
