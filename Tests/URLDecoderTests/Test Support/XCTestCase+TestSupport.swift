@@ -1,17 +1,18 @@
+import URLDecoder
 import XCTest
 
 extension XCTestCase {
     
-    func assertExpectedDecodingError(
-        _ expected: DecodingError,
+    func assertExpectedDecodingError<ErrorType>(
+        _ expected: ErrorType,
         equals actual: Error,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) {
-        guard let actualError = actual as? DecodingError else {
+    ) where ErrorType: Error & Equatable {
+        guard let actualError = actual as? ErrorType else {
             let issue = XCTIssue(
                 type: .assertionFailure,
-                compactDescription: "Expected a \(DecodingError.self), got \(type(of: actual))",
+                compactDescription: "Expected a \(ErrorType.self), got \(type(of: actual))",
                 sourceCodeContext: XCTSourceCodeContext(
                     location: XCTSourceCodeLocation(filePath: file, lineNumber: line)
                 )
@@ -21,10 +22,10 @@ extension XCTestCase {
             return
         }
         
-        if expected != actualError {
+        if actualError != expected {
             let issue = XCTIssue(
                 type: .assertionFailure,
-                compactDescription: "Errors are not equal - expected \(expected), received \(actualError)",
+                compactDescription: "Errors are not equal - expected \(expected), received \(actual)",
                 sourceCodeContext: XCTSourceCodeContext(
                     location: XCTSourceCodeLocation(filePath: file, lineNumber: line)
                 )
